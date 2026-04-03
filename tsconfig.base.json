@@ -8,6 +8,16 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ac2/contracts": [
+        "packages/contracts/src/index.ts"
+      ],
+      "@ac2/auth": [
+        "packages/auth/src/index.ts"
+      ]
+    },
+    "ignoreDeprecations": "6.0"
   }
 }
