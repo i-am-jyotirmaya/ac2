@@ -1,0 +1,92 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+.pnpm-store/
+
+# =========================
+# Build outputs
+# =========================
+dist/
+build/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+
+# Turborepo
+.turbo/
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Editor / IDE
+# =========================
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# =========================
+# Next.js specific
+# =========================
+.next/
+out/
+
+# =========================
+# Fastify / Node runtime
+# =========================
+tmp/
+temp/
+
+# =========================
+# Prisma (optional)
+# =========================
+prisma/dev.db
+prisma/dev.db-journal
+
+# =========================
+# Docker
+# =========================
+docker-data/
+*.pid
+
+# =========================
+# Misc
+# =========================
+*.pem
+*.key
+
+# =========================
+# Debug / temp files
+# =========================
+*.swp
+*.swo
+*.tmp
+*.bak
