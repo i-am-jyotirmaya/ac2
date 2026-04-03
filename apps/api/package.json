@@ -20,7 +20,8 @@
     "@ac2/contracts": "workspace:*",
     "fastify": "^5.8.4",
     "skia-canvas": "^3.0.8",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "@ac2/auth": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.19.37",
