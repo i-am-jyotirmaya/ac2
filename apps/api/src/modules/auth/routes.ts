@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import type { JwtAuthProvider } from "@ac2/auth";
+import type { AuthProvider } from "@ac2/auth";
 import {
   AuthTokenResponseSchema,
   LoginRequestSchema,
@@ -7,7 +7,7 @@ import {
   MfaVerifyRequestSchema,
   RegisterRequestSchema,
 } from "@ac2/contracts";
-import { InMemoryOtpMfaProvider } from "./mfa-provider.js";
+import type { DebuggableMfaProvider } from "@ac2/db";
 
 const validationError = (details: unknown) => ({
   error: "ValidationError",
@@ -23,8 +23,8 @@ const authError = (message: string) => ({
 export const registerAuthRoutes = (
   app: FastifyInstance,
   dependencies: {
-    authProvider: JwtAuthProvider;
-    mfaProvider: InMemoryOtpMfaProvider;
+    authProvider: AuthProvider;
+    mfaProvider: DebuggableMfaProvider;
   },
 ): void => {
   app.post("/auth/register", async (request, reply) => {
@@ -63,7 +63,9 @@ export const registerAuthRoutes = (
       return {
         requiresMfa: login.requiresMfa,
         challengeId: login.challengeId,
-        debugCode: login.challengeId ? dependencies.mfaProvider.getDebugCode(login.challengeId) : null,
+        debugCode: login.challengeId
+          ? await dependencies.mfaProvider.getDebugCode(login.challengeId)
+          : null,
       };
     } catch (error) {
       return reply.status(401).send(authError(error instanceof Error ? error.message : "Invalid credentials"));

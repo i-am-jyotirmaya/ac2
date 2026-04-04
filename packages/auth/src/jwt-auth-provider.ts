@@ -128,7 +128,6 @@ export interface JwtAuthProviderOptions {
 
 export class JwtAuthProvider implements AuthProvider {
   public readonly flags: AuthFeatureFlags;
-  private readonly pendingMfa = new Map<string, AuthIdentity>();
   private readonly tokenService: TokenService;
   private readonly passwordHasher: PasswordHasher;
 
@@ -174,7 +173,10 @@ export class JwtAuthProvider implements AuthProvider {
     };
   }
 
-  async beginLogin(input: { email: string; password: string }): Promise<{ requiresMfa: boolean; challengeId?: string; user?: AuthIdentity }> {
+  async beginLogin(input: {
+    email: string;
+    password: string;
+  }): Promise<{ requiresMfa: boolean; challengeId?: string; user?: AuthIdentity }> {
     const user = await this.options.repository.findUserByEmail(input.email);
     if (!user) {
       throw new Error("Invalid credentials");
@@ -205,7 +207,6 @@ export class JwtAuthProvider implements AuthProvider {
     }
 
     const challenge = await this.options.mfaProvider.createChallenge(user);
-    this.pendingMfa.set(challenge.challengeId, identity);
 
     return {
       requiresMfa: true,
@@ -218,18 +219,22 @@ export class JwtAuthProvider implements AuthProvider {
       throw new Error("MFA provider not configured");
     }
 
-    const identity = this.pendingMfa.get(input.challengeId);
-    if (!identity) {
-      throw new Error("MFA challenge not found");
-    }
-
-    const verified = await this.options.mfaProvider.verifyChallenge(input.challengeId, input.code);
-    if (!verified) {
+    const challenge = await this.options.mfaProvider.verifyChallenge(input.challengeId, input.code);
+    if (!challenge) {
       throw new Error("Invalid MFA code");
     }
 
-    this.pendingMfa.delete(input.challengeId);
-    return identity;
+    const user = await this.options.repository.findUserById(challenge.userId);
+    if (!user) {
+      throw new Error("MFA challenge user not found");
+    }
+
+    return {
+      userId: user.id,
+      email: user.email,
+      plan: user.plan,
+      mfaEnabled: user.mfaEnabled,
+    };
   }
 
   async issueAccessToken(identity: AuthIdentity): Promise<{ token: string; expiresInSeconds: number }> {

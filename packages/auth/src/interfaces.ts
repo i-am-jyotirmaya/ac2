@@ -27,7 +27,7 @@ export interface MfaChallenge {
 
 export interface MfaProvider {
   createChallenge(user: AuthUser): Promise<MfaChallenge>;
-  verifyChallenge(challengeId: string, code: string): Promise<boolean>;
+  verifyChallenge(challengeId: string, code: string): Promise<MfaChallenge | null>;
 }
 
 export interface AuthRepository {
