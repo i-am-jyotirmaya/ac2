@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import type { InMemoryAuthRepository } from "../auth/store.js";
-import type { WorkspaceStore } from "./store.js";
+import type { AuthProvider, AuthRepository } from "@ac2/auth";
+import type { WorkspaceRepository } from "@ac2/db";
 import {
   AddWorkspaceMemberRequestSchema,
   CreateWorkspaceRequestSchema,
@@ -8,7 +8,6 @@ import {
 } from "@ac2/contracts";
 import { requireRole } from "./authorization.js";
 import { authenticate } from "../auth/plugin.js";
-import type { JwtAuthProvider } from "@ac2/auth";
 
 const validationError = (details: unknown) => ({
   error: "ValidationError",
@@ -19,9 +18,9 @@ const validationError = (details: unknown) => ({
 export const registerWorkspaceRoutes = (
   app: FastifyInstance,
   dependencies: {
-    authProvider: JwtAuthProvider;
-    authRepository: InMemoryAuthRepository;
-    workspaceStore: WorkspaceStore;
+    authProvider: AuthProvider;
+    authRepository: AuthRepository;
+    workspaceRepository: WorkspaceRepository;
   },
 ): void => {
   const authHook = authenticate(dependencies.authProvider);
@@ -37,7 +36,9 @@ export const registerWorkspaceRoutes = (
     }
 
     if (request.authIdentity.plan === "free") {
-      const ownerWorkspaceCount = await dependencies.workspaceStore.countByOwner(request.authIdentity.userId);
+      const ownerWorkspaceCount = await dependencies.workspaceRepository.countByOwner(
+        request.authIdentity.userId,
+      );
       if (ownerWorkspaceCount >= 1) {
         return reply.status(403).send({
           error: "PlanLimitExceeded",
@@ -46,7 +47,7 @@ export const registerWorkspaceRoutes = (
       }
     }
 
-    const workspace = await dependencies.workspaceStore.createWorkspace({
+    const workspace = await dependencies.workspaceRepository.createWorkspace({
       name: parsed.data.name,
       ownerUserId: request.authIdentity.userId,
     });
@@ -59,7 +60,9 @@ export const registerWorkspaceRoutes = (
       return reply.status(401).send({ error: "Unauthorized", message: "Authentication required" });
     }
 
-    const workspaces = await dependencies.workspaceStore.listByUser(request.authIdentity.userId);
+    const workspaces = await dependencies.workspaceRepository.listByUser(
+      request.authIdentity.userId,
+    );
     return workspaces.map((workspace) => WorkspaceSchema.parse(workspace));
   });
 
@@ -74,7 +77,10 @@ export const registerWorkspaceRoutes = (
     }
 
     const workspaceId = (request.params as { workspaceId: string }).workspaceId;
-    const actorRole = dependencies.workspaceStore.getMemberRole(workspaceId, request.authIdentity.userId);
+    const actorRole = await dependencies.workspaceRepository.getMemberRole(
+      workspaceId,
+      request.authIdentity.userId,
+    );
     if (!requireRole(actorRole, "admin", reply)) {
       return;
     }
@@ -84,7 +90,11 @@ export const registerWorkspaceRoutes = (
       return reply.status(404).send({ error: "NotFound", message: "User not found" });
     }
 
-    const workspace = await dependencies.workspaceStore.addMember(workspaceId, invitee.id, parsed.data.role);
+    const workspace = await dependencies.workspaceRepository.addMember(
+      workspaceId,
+      invitee.id,
+      parsed.data.role,
+    );
     return WorkspaceSchema.parse(workspace);
   });
 };

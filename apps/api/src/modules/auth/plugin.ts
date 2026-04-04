@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import type { JwtAuthProvider } from "@ac2/auth";
+import type { AuthProvider } from "@ac2/auth";
 
 export interface RequestAuthIdentity {
   userId: string;
@@ -14,7 +14,7 @@ declare module "fastify" {
   }
 }
 
-export const authenticate = (authProvider: JwtAuthProvider) => {
+export const authenticate = (authProvider: AuthProvider) => {
   return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     const authHeader = request.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

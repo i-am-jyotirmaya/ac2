@@ -16,6 +16,9 @@
       ],
       "@ac2/auth": [
         "packages/auth/src/index.ts"
+      ],
+      "@ac2/db": [
+        "packages/db/src/index.ts"
       ]
     },
     "ignoreDeprecations": "6.0"
