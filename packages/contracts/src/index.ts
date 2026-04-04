@@ -40,6 +40,13 @@ export const MfaVerifyRequestSchema = z.object({
 });
 export type MfaVerifyRequest = z.infer<typeof MfaVerifyRequestSchema>;
 
+export const MfaChallengeResponseSchema = z.object({
+  requiresMfa: z.boolean(),
+  challengeId: z.string().min(1).optional(),
+  debugCode: z.string().nullable(),
+});
+export type MfaChallengeResponse = z.infer<typeof MfaChallengeResponseSchema>;
+
 export const AuthTokenResponseSchema = z.object({
   accessToken: z.string(),
   tokenType: z.literal("Bearer"),
@@ -77,3 +84,29 @@ export const AddWorkspaceMemberRequestSchema = z.object({
   role: WorkspaceRoleSchema.exclude(["owner"]),
 });
 export type AddWorkspaceMemberRequest = z.infer<typeof AddWorkspaceMemberRequestSchema>;
+
+export const TemplateStatusSchema = z.enum(["draft", "review", "live", "archived"]);
+export type TemplateStatus = z.infer<typeof TemplateStatusSchema>;
+
+export const TemplateCategorySchema = z.enum(["social", "email", "ad", "product"]);
+export type TemplateCategory = z.infer<typeof TemplateCategorySchema>;
+
+export const CreateTemplateRequestSchema = z.object({
+  name: z.string().min(2).max(64),
+  description: z.string().max(160).default(""),
+  category: TemplateCategorySchema,
+  width: z.int().min(320).max(4096),
+  height: z.int().min(320).max(4096),
+});
+export type CreateTemplateRequest = z.infer<typeof CreateTemplateRequestSchema>;
+
+export const TemplateSummarySchema = CreateTemplateRequestSchema.extend({
+  id: z.string(),
+  status: TemplateStatusSchema,
+  workspaceName: z.string().min(1),
+  lastEditedBy: z.string().min(1),
+  updatedAt: z.string().min(1),
+  usageCount: z.int().nonnegative(),
+  version: z.int().positive(),
+});
+export type TemplateSummary = z.infer<typeof TemplateSummarySchema>;

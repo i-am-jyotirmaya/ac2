@@ -49,38 +49,38 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: oklch(0.986 0.012 80.4);
+  --foreground: oklch(0.242 0.018 45.2);
+  --card: oklch(0.996 0.004 84.7);
+  --card-foreground: oklch(0.242 0.018 45.2);
+  --popover: oklch(0.996 0.004 84.7);
+  --popover-foreground: oklch(0.242 0.018 45.2);
+  --primary: oklch(0.558 0.119 40.8);
+  --primary-foreground: oklch(0.985 0.008 84.4);
+  --secondary: oklch(0.946 0.015 79.3);
+  --secondary-foreground: oklch(0.292 0.022 48.2);
+  --muted: oklch(0.958 0.01 79.9);
+  --muted-foreground: oklch(0.475 0.021 44.1);
+  --accent: oklch(0.923 0.032 71.6);
+  --accent-foreground: oklch(0.292 0.022 48.2);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.884 0.018 71.8);
+  --input: oklch(0.92 0.012 76.1);
+  --ring: oklch(0.678 0.11 42.1);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.966 0.012 77.5);
+  --sidebar-foreground: oklch(0.242 0.018 45.2);
+  --sidebar-primary: oklch(0.558 0.119 40.8);
+  --sidebar-primary-foreground: oklch(0.985 0.008 84.4);
+  --sidebar-accent: oklch(0.934 0.022 73.2);
+  --sidebar-accent-foreground: oklch(0.292 0.022 48.2);
+  --sidebar-border: oklch(0.884 0.018 71.8);
+  --sidebar-ring: oklch(0.678 0.11 42.1);
 }
 
 .dark {
@@ -123,6 +123,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(circle at top left, rgba(196, 116, 59, 0.16), transparent 32%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0));
   }
   html {
     @apply font-sans;
